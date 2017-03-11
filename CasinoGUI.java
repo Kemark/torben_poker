@@ -3,6 +3,7 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.event.*;
 import java.util.Calendar;
+
 /**
   *
   * Beschreibung
@@ -16,7 +17,7 @@ public class CasinoGUI extends Frame {
   private JLabel lblPasswort = new JLabel();
   private JLabel lblKontostand = new JLabel();
   private JLabel lblEinsatz = new JLabel();
-  private JTextField nfEinsatz = new JTextField();
+  private JTextField tfEinsatz = new JTextField();
   private JButton btnChange1 = new JButton();
   private JButton btnChange2 = new JButton();
   private JButton btnChange3 = new JButton();
@@ -45,11 +46,11 @@ public class CasinoGUI extends Frame {
   private JTextField tfKontostand = new JTextField();
   // Ende Attribute
 
-  private Casino poker = new Casino(); 
-  private DBZugriffCasino meinDBZugriff = new DBZugriffCasino();
+  private Casino casino = new Casino();
 
   // globale Einstellungen wie farben und Font
   private Color global_clrButtonForeground = Color.BLUE;
+  private Font global_font = new Font("Avenir Next W01 Light", Font.PLAIN, 16);
 
   /**
    * 
@@ -59,10 +60,12 @@ public class CasinoGUI extends Frame {
     // Frame-Initialisierung
     super();
     addWindowListener(new WindowAdapter() {
-      public void windowClosing(WindowEvent evt) { dispose(); }
+      public void windowClosing(WindowEvent evt) {
+        dispose();
+      }
     });
 
-    int frameWidth = 1200; 
+    int frameWidth = 1200;
     int frameHeight = 800;
     setSize(frameWidth, frameHeight);
     Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
@@ -79,137 +82,142 @@ public class CasinoGUI extends Frame {
     lblName.setBounds(200, 40, 52, 22);
     lblName.setText("Name:");
     lblName.setForeground(Color.WHITE);
-    lblName.setFont(new Font("Garamond", Font.BOLD + Font.ITALIC, 16));
+    lblName.setFont(global_font);
     cp.add(lblName);
-    lblPasswort.setBounds(475, 40, 70, 22);
+    lblPasswort.setBounds(460, 40, 120, 22);
     lblPasswort.setText("Passwort:");
     lblPasswort.setForeground(Color.WHITE);
-    lblPasswort.setFont(new Font("Garamond", Font.BOLD + Font.ITALIC, 16));
+    lblPasswort.setFont(global_font);
     cp.add(lblPasswort);
-    lblKontostand.setBounds(830, 40, 87, 22);
+    lblKontostand.setBounds(820, 40, 120, 22);
     lblKontostand.setText("Kontostand:");
     lblKontostand.setForeground(Color.WHITE);
-    lblKontostand.setFont(new Font("Garamond", Font.BOLD + Font.ITALIC, 16));
+    lblKontostand.setFont(global_font);
     cp.add(lblKontostand);
     lblEinsatz.setBounds(955, 600, 90, 35);
     lblEinsatz.setText("Einsatz:");
     lblEinsatz.setOpaque(false);
     lblEinsatz.setForeground(Color.WHITE);
-    lblEinsatz.setFont(new Font("Garamond", Font.BOLD + Font.ITALIC, 18));
+    lblEinsatz.setFont(global_font);
     cp.add(lblEinsatz);
-    nfEinsatz.setBounds(950, 630, 80, 25);
-    nfEinsatz.setText("");
-    nfEinsatz.setBackground(new Color(0x228B22));
-    nfEinsatz.setForeground(Color.WHITE);
-    nfEinsatz.setFont(new Font("Garamond", Font.BOLD, 14));
-    cp.add(nfEinsatz);
+    tfEinsatz.setBounds(950, 630, 80, 25);
+    tfEinsatz.setText("");
+    tfEinsatz.setBackground(new Color(0x228B22));
+    tfEinsatz.setForeground(Color.WHITE);
+    tfEinsatz.setFont(global_font);
+    tfEinsatz.addKeyListener(new KeyAdapter() {
+        public void keyTyped(KeyEvent e) {
+            CasinoGUI.checkedNumberPressed(e);
+        }
+    });    
+    cp.add(tfEinsatz);
 
     btnChange1.setBounds(150, 445, 90, 35);
     btnChange1.setText("Change");
     btnChange1.setMargin(new Insets(2, 2, 2, 2));
-    btnChange1.addActionListener(new ActionListener() { 
-      public void actionPerformed(ActionEvent evt) { 
+    btnChange1.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
         btnChange1_ActionPerformed(evt);
       }
     });
     // btnChange1.setForeground(Color.YELLOW);
-    btnChange1.setBackground(global_clrButtonForeground );
+    btnChange1.setBackground(global_clrButtonForeground);
 
-    btnChange1.setFont(new Font("Garamond", Font.BOLD + Font.ITALIC, 14));
+    btnChange1.setFont(global_font);
     cp.add(btnChange1);
 
     btnChange2.setBounds(350, 445, 90, 35);
     btnChange2.setText("Change");
     btnChange2.setMargin(new Insets(2, 2, 2, 2));
-    btnChange2.addActionListener(new ActionListener() { 
-      public void actionPerformed(ActionEvent evt) { 
+    btnChange2.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
         btnChange2_ActionPerformed(evt);
       }
     });
-    btnChange2.setBackground(global_clrButtonForeground );
-    btnChange2.setFont(new Font("Garamond", Font.BOLD + Font.ITALIC, 14));
+    btnChange2.setBackground(global_clrButtonForeground);
+    btnChange2.setFont(global_font);
     cp.add(btnChange2);
 
     btnChange3.setBounds(550, 445, 90, 35);
     btnChange3.setText("Change");
     btnChange3.setMargin(new Insets(2, 2, 2, 2));
     btnChange3.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent evt) { 
+      public void actionPerformed(ActionEvent evt) {
         btnChange3_ActionPerformed(evt);
       }
     });
     btnChange3.setBackground(global_clrButtonForeground);
-    btnChange3.setFont(new Font("Garamond", Font.BOLD + Font.ITALIC, 14));
+    btnChange3.setFont(global_font);
     cp.add(btnChange3);
 
     btnChange4.setBounds(750, 445, 90, 35);
     btnChange4.setText("Change");
     btnChange4.setMargin(new Insets(2, 2, 2, 2));
-    btnChange4.addActionListener(new ActionListener() { 
-      public void actionPerformed(ActionEvent evt) { 
+    btnChange4.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
         btnChange4_ActionPerformed(evt);
       }
     });
     btnChange4.setBackground(global_clrButtonForeground);
-    btnChange4.setFont(new Font("Garamond", Font.BOLD + Font.ITALIC, 14));
+    btnChange4.setFont(global_font);
     cp.add(btnChange4);
 
     btnChange5.setBounds(950, 445, 90, 35);
     btnChange5.setText("Change");
     btnChange5.setMargin(new Insets(2, 2, 2, 2));
-    btnChange5.addActionListener(new ActionListener() { 
-      public void actionPerformed(ActionEvent evt) { 
+    btnChange5.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
         btnChange5_ActionPerformed(evt);
       }
     });
     btnChange5.setBackground(global_clrButtonForeground);
-    btnChange5.setFont(new Font("Garamond", Font.BOLD + Font.ITALIC, 14));
+    btnChange5.setFont(global_font);
     cp.add(btnChange5);
 
     btnChangeAll.setBounds(545, 488, 100, 35);
     btnChangeAll.setText("Change All");
     btnChangeAll.setMargin(new Insets(2, 2, 2, 2));
-    btnChangeAll.addActionListener(new ActionListener() { 
-      public void actionPerformed(ActionEvent evt) { 
+    btnChangeAll.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
         btnChangeAll_ActionPerformed(evt);
       }
     });
     btnChangeAll.setBackground(global_clrButtonForeground);
-    btnChangeAll.setFont(new Font("Garamond", Font.BOLD + Font.ITALIC, 14));
+    btnChangeAll.setFont(global_font);
     cp.add(btnChangeAll);
 
-    btnRegistrieren.setBounds(100, 600, 100, 25);
+    btnRegistrieren.setBounds(100, 600, 120, 35);
     btnRegistrieren.setText("Registrieren");
     btnRegistrieren.setMargin(new Insets(2, 2, 2, 2));
-    btnRegistrieren.addActionListener(new ActionListener() { 
-      public void actionPerformed(ActionEvent evt) { 
+    btnRegistrieren.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
         btnRegistrieren_ActionPerformed(evt);
       }
     });
     btnRegistrieren.setBackground(global_clrButtonForeground);
-    btnRegistrieren.setFont(new Font("Garamond", Font.BOLD + Font.ITALIC, 16));
+    btnRegistrieren.setFont(global_font);
     cp.add(btnRegistrieren);
-    btnAnmelden.setBounds(100, 630, 100, 25);
+    btnAnmelden.setBounds(100, 630, 120, 35);
     btnAnmelden.setText("Anmelden");
     btnAnmelden.setMargin(new Insets(2, 2, 2, 2));
-    btnAnmelden.addActionListener(new ActionListener() { 
-      public void actionPerformed(ActionEvent evt) { 
+    btnAnmelden.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
         btnAnmelden_ActionPerformed(evt);
       }
     });
     btnAnmelden.setBackground(global_clrButtonForeground);
-    btnAnmelden.setFont(new Font("Garamond", Font.BOLD + Font.ITALIC, 16));
+    btnAnmelden.setFont(global_font);
     cp.add(btnAnmelden);
-    btnAbmelden.setBounds(100, 660, 100, 25);
+    btnAbmelden.setBounds(100, 660, 120, 35);
     btnAbmelden.setText("Abmelden");
     btnAbmelden.setMargin(new Insets(2, 2, 2, 2));
-    btnAbmelden.addActionListener(new ActionListener() { 
-      public void actionPerformed(ActionEvent evt) { 
+    btnAbmelden.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
         btnAbmelden_ActionPerformed(evt);
       }
     });
     btnAbmelden.setBackground(global_clrButtonForeground);
-    btnAbmelden.setFont(new Font("Garamond", Font.BOLD + Font.ITALIC, 16));
+    btnAbmelden.setFont(global_font);
     cp.add(btnAbmelden);
 
     lblCard1.setBounds(105, 195, 170, 220);
@@ -253,7 +261,7 @@ public class CasinoGUI extends Frame {
     lblCardBackground1.setOpaque(true);
     lblCardBackground1.setForeground(new Color(0xEEEEEE));
     cp.add(lblCardBackground1);
-    
+
     lblCardbackground2.setBounds(300, 190, 180, 230);
     lblCardbackground2.setText("");
     lblCardbackground2.setBackground(Color.WHITE);
@@ -287,17 +295,17 @@ public class CasinoGUI extends Frame {
     lblStrich.setBackground(Color.WHITE);
     lblStrich.setOpaque(true);
     cp.add(lblStrich);
-   
-    tfName.setBounds(260, 40, 100, 20);
+
+    tfName.setBounds(260, 40, 180, 20);
     tfName.setBackground(new Color(0x228B22));
     tfName.setForeground(Color.WHITE);
-    tfName.setFont(new Font("Garamond", Font.BOLD, 14));
+    tfName.setFont(global_font);
     cp.add(tfName);
 
-    tfPasswort.setBounds(550, 40, 100, 20);
+    tfPasswort.setBounds(550, 40, 120, 20);
     tfPasswort.setBackground(new Color(0x228B22));
     tfPasswort.setForeground(Color.WHITE);
-    tfPasswort.setFont(new Font("Garamond", Font.BOLD, 14));
+    tfPasswort.setFont(global_font);
     cp.add(tfPasswort);
 
     jLabel1.setBounds(390, 530, 400, 200);
@@ -305,151 +313,125 @@ public class CasinoGUI extends Frame {
     jLabel1.setIcon(jLabel1Icon);
     jLabel1.setBackground(new Color(0x228B22));
     jLabel1.setOpaque(true);
-    jLabel1.setFont(new Font("Garamond", Font.BOLD, 12));
+    jLabel1.setFont(global_font);
     cp.add(jLabel1);
 
     btnStart.setBounds(920, 530, 140, 50);
     btnStart.setText("START");
     btnStart.setMargin(new Insets(2, 2, 2, 2));
-    btnStart.addActionListener(new ActionListener() { 
-      public void actionPerformed(ActionEvent evt) { 
+    btnStart.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
         btnStart_ActionPerformed(evt);
       }
     });
     btnStart.setBackground(new Color(0xFE2E2E));
-    btnStart.setFont(new Font("Garamond", Font.BOLD + Font.ITALIC, 22));
+    btnStart.setFont(global_font);
     cp.add(btnStart);
 
     tfKontostand.setBounds(930, 40, 100, 20);
     tfKontostand.setBackground(new Color(0x228B22));
     tfKontostand.setForeground(Color.WHITE);
-    tfKontostand.setFont(new Font("Garamond", Font.BOLD, 14));
+    tfKontostand.setFont(global_font);
+    tfKontostand.addKeyListener(new KeyAdapter() {
+        public void keyTyped(KeyEvent e) {
+            CasinoGUI.checkedNumberPressed(e);
+        }
+    });
     cp.add(tfKontostand);
     // Ende Komponenten
-    
-    // am Ende aller karten laden
-    poker.ladeKarten(170, 220);
 
-    // alle Karten initial laden. Entspricht der gleichen Aktion wie druecken des "change all" buttons.
-    this.changeAll();
+    // am Ende aller karten laden
+    casino.ladeKarten(170, 220);
+
+    // alle Karten initial laden. Es wird immer die Kartenrueckseite gesetzt.
+    lblCard1.setIcon(casino.getKarteRueckseite());
+    lblCard2.setIcon(casino.getKarteRueckseite());
+    lblCard3.setIcon(casino.getKarteRueckseite());
+    lblCard4.setIcon(casino.getKarteRueckseite());
+    lblCard5.setIcon(casino.getKarteRueckseite());
 
     setVisible(true);
   } // end of public CasinoGUI
-  
+
   // Anfang Methoden
-  
+
   public static void main(String[] args) {
     new CasinoGUI();
   } // end of main
-  
+
   public void btnChange1_ActionPerformed(ActionEvent evt) {
-    lblCard1.setIcon(poker.getKarteZufaellig());
+    lblCard1.setIcon(casino.getKarteZufaellig());
   } // end of btnChange1_ActionPerformed
 
   public void btnChange2_ActionPerformed(ActionEvent evt) {
-    lblCard2.setIcon(poker.getKarteZufaellig());
+    lblCard2.setIcon(casino.getKarteZufaellig());
   } // end of btnChange2_ActionPerformed
 
   public void btnChange3_ActionPerformed(ActionEvent evt) {
-    lblCard3.setIcon(poker.getKarteZufaellig());
+    lblCard3.setIcon(casino.getKarteZufaellig());
   } // end of btnChange3_ActionPerformed
 
   public void btnChange4_ActionPerformed(ActionEvent evt) {
-    lblCard4.setIcon(poker.getKarteZufaellig());
+    lblCard4.setIcon(casino.getKarteZufaellig());
   } // end of btnChange4_ActionPerformed
 
   public void btnChange5_ActionPerformed(ActionEvent evt) {
-    lblCard5.setIcon(poker.getKarteZufaellig());
+    lblCard5.setIcon(casino.getKarteZufaellig());
   } // end of btnChangeAll_ActionPerformed
 
-  private void changeAll() {
-    // geladene Karten zuweisen
-    lblCard1.setIcon(poker.getKarteZufaellig());
-    lblCard2.setIcon(poker.getKarteZufaellig());
-    lblCard3.setIcon(poker.getKarteZufaellig());
-    lblCard4.setIcon(poker.getKarteZufaellig());
-    lblCard5.setIcon(poker.getKarteZufaellig());
-  }
-
   public void btnChangeAll_ActionPerformed(ActionEvent evt) {
-    this.changeAll();
+    lblCard1.setIcon(casino.getKarteZufaellig());
+    lblCard2.setIcon(casino.getKarteZufaellig());
+    lblCard3.setIcon(casino.getKarteZufaellig());
+    lblCard4.setIcon(casino.getKarteZufaellig());
+    lblCard5.setIcon(casino.getKarteZufaellig());
   } // end of btnChangeAll_ActionPerformed
 
   public void btnRegistrieren_ActionPerformed(ActionEvent evt) {
-    erfassen();
+    casino.registrieren(tfName.getText(), tfPasswort.getText(), tfKontostand.getText());
   } // end of btnRegistrieren_ActionPerformed
 
   public void btnAnmelden_ActionPerformed(ActionEvent evt) {
-    suchen();
+    casino.anmelden(tfName.getText(), tfPasswort.getText(), tfKontostand, tfEinsatz);
   } // end of btnAnmelden_ActionPerformed
 
   public void btnAbmelden_ActionPerformed(ActionEvent evt) {
-    aendern (); 
+    aendern();
     System.exit(0);
   } // end of btnAbmelden_ActionPerformed
 
-   public void btnStart_ActionPerformed(ActionEvent evt) {
+  public void btnStart_ActionPerformed(ActionEvent evt) {
     // TODO hier Quelltext einfügen
   } // end of btnStart_ActionPerformed
-  
- /* MyPanel = new JPanel()
-   {
-     public void paintComponent(Graphics g) 
-   {
-        // Das Bild von der resource in eine Image Variable laden
-        Image img = new ImageIcon(getClass().getResource("MiyPic.jpg")).getImage();
-        g.drawImage(img, 0, 0, null);
-      } 
-    }; */
-  
- /* private void MergeCards(int AnzahlMischvorgange)
-  {
-    // Mischen geschieht durch das Austauschen einer Karte an 
-    // einer zufälligen Position im Deck mit der i.-ten Karte
-    int TauschPosition=0;
-    
-    // Anzahl Mischvorgänge
-    for (int j=0; j<AnzahlMischvorgange; j++)
-    {
-      // Austausch so oft wie Karten im Deck
-      for (int i=0; i<Deck.size(); i++)
-      {
-        // zufällige Karte mit i.ten Karte austauschen
-        TauschPosition= myRandom(0, Deck.size());
-        Deck.add(TauschPosition, Deck.remove(i));
+
+
+  public static void checkedNumberPressed(KeyEvent e) {
+
+    // Vorlage stammt aus http://stackoverflow.com/questions/11093326/restricting-jtextfield-input-to-integers
+      switch(e.getKeyChar()) {
+        case '0':
+        case '1':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9':
+        // loeschen der eingegeben Zahlen ist auch erlaubt
+        case KeyEvent.VK_BACK_SPACE:
+        case KeyEvent.VK_DELETE:
+          // es werden nur die zuvor definierten Zeichen verarbeitet
+          break;
+        default:
+          // aller anderen Zeichen werden ignoriert
+          e.consume();
       }
-    }
-  }
-  */  
-  public void suchen () {
-    poker.setName(tfName.getText() );
-    poker.setPasswort(tfPasswort.getText());
-    meinDBZugriff.sucheKunde(poker);
-    tfKontostand.setText(String.valueOf(poker.getKontostand()));
-    nfEinsatz.setText(Integer.toString(poker.getEinsatz()));
-  }
- 
-  public void erfassen() {
-    poker.setName(tfName.getText());
-    poker.setPasswort(tfPasswort.getText());
-    poker.setKontostand(Integer.parseInt(tfKontostand.getText()));
-    poker.setEinsatz(Integer.parseInt(nfEinsatz.getText())); 
-    meinDBZugriff.erfasseKunde(poker);
-  }
-    
+  };
+
   public void aendern() {
-    int rc=0;
-    poker.setName(tfName.getText());
-    meinDBZugriff.sucheKunde(poker);
-    poker.setKontostand(Integer.parseInt(tfKontostand.getText()));
-    poker.setEinsatz(Integer.parseInt(nfEinsatz.getText()));
-    meinDBZugriff.aendereKunde(poker);
-    
-    if (rc<0) {
-      JOptionPane.showMessageDialog(null,"Zugriff auf DB fehlgeschlagen","Fehler", JOptionPane.INFORMATION_MESSAGE);
-    } // end of if
-  } 
- 
+    casino.aendern(tfName.getText(), tfKontostand.getText(), tfEinsatz.getText());
+  }
 
   // Ende Methoden
 } // end of class CasinoGUI

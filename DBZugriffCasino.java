@@ -20,7 +20,7 @@ public class DBZugriffCasino
     boolean rc = true;
     String sql;
     
-    sql = "INSERT INTO Casino_Poker (Name, Passwort, letzterEinsatz, Kontostand) VALUES ('" + pCasino.getName() + "','" + pCasino.getPasswort() + "'," + pCasino.getEinsatz() + "," + pCasino.getKontostand() + ");";
+    sql = "INSERT INTO Casino_Poker (Name, Passwort, 'letzter Einsatz', Kontostand) VALUES ('" + pCasino.getName() + "','" + pCasino.getPasswort() + "'," + pCasino.getEinsatz() + "," + pCasino.getKontostand() + ");";
     
     // Bei der Bearbeitung moegliche Fehler pruefen und entsprechende Fehlercodes zurueckgeben
     // 1. Datenbank oeffnen
