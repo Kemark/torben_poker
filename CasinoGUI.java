@@ -48,10 +48,6 @@ public class CasinoGUI extends Frame {
 
   private Casino casino = new Casino();
 
-  // globale Einstellungen wie farben und Font
-  private Color global_clrButtonForeground = Color.BLUE;
-  private Font global_font = new Font("Avenir Next W01 Light", Font.PLAIN, 16);
-
   /**
    * siehe http://stackoverflow.com/questions/11093326/restricting-jtextfield-input-to-integers
    */
@@ -112,29 +108,29 @@ public class CasinoGUI extends Frame {
     lblName.setBounds(200, 40, 52, 22);
     lblName.setText("Name:");
     lblName.setForeground(Color.WHITE);
-    lblName.setFont(global_font);
+    lblName.setFont(new Font("Avenir Next W01 Light", Font.PLAIN, 16));
     cp.add(lblName);
     lblPasswort.setBounds(460, 40, 120, 22);
     lblPasswort.setText("Passwort:");
     lblPasswort.setForeground(Color.WHITE);
-    lblPasswort.setFont(global_font);
+    lblPasswort.setFont(new Font("Avenir Next W01 Light", Font.PLAIN, 16));
     cp.add(lblPasswort);
     lblKontostand.setBounds(820, 40, 120, 22);
     lblKontostand.setText("Kontostand:");
     lblKontostand.setForeground(Color.WHITE);
-    lblKontostand.setFont(global_font);
+    lblKontostand.setFont(new Font("Avenir Next W01 Light", Font.PLAIN, 16));
     cp.add(lblKontostand);
     lblEinsatz.setBounds(955, 600, 90, 35);
     lblEinsatz.setText("Einsatz:");
     lblEinsatz.setOpaque(false);
     lblEinsatz.setForeground(Color.WHITE);
-    lblEinsatz.setFont(global_font);
+    lblEinsatz.setFont(new Font("Avenir Next W01 Light", Font.PLAIN, 16));
     cp.add(lblEinsatz);
     tfEinsatz.setBounds(950, 630, 80, 25);
     tfEinsatz.setText("");
     tfEinsatz.setBackground(new Color(0x228B22));
     tfEinsatz.setForeground(Color.WHITE);
-    tfEinsatz.setFont(global_font);
+    tfEinsatz.setFont(new Font("Avenir Next W01 Light", Font.PLAIN, 16));
     tfEinsatz.addKeyListener(this.numberCheckKeyAdapter);
     cp.add(tfEinsatz);
 
@@ -148,9 +144,8 @@ public class CasinoGUI extends Frame {
       }
     });
     // btnChange1.setForeground(Color.YELLOW);
-    btnChange1.setBackground(global_clrButtonForeground);
 
-    btnChange1.setFont(global_font);
+    btnChange1.setFont(new Font("Avenir Next W01 Light", Font.PLAIN, 16));
     cp.add(btnChange1);
 
     btnChange2.setBounds(350, 445, 90, 35);
@@ -162,8 +157,7 @@ public class CasinoGUI extends Frame {
         btnChange2_ActionPerformed(evt);
       }
     });
-    btnChange2.setBackground(global_clrButtonForeground);
-    btnChange2.setFont(global_font);
+    btnChange2.setFont(new Font("Avenir Next W01 Light", Font.PLAIN, 16));
     cp.add(btnChange2);
 
     btnChange3.setBounds(550, 445, 90, 35);
@@ -175,8 +169,7 @@ public class CasinoGUI extends Frame {
         btnChange3_ActionPerformed(evt);
       }
     });
-    btnChange3.setBackground(global_clrButtonForeground);
-    btnChange3.setFont(global_font);
+    btnChange3.setFont(new Font("Avenir Next W01 Light", Font.PLAIN, 16));
     cp.add(btnChange3);
 
     btnChange4.setBounds(750, 445, 90, 35);
@@ -188,8 +181,7 @@ public class CasinoGUI extends Frame {
         btnChange4_ActionPerformed(evt);
       }
     });
-    btnChange4.setBackground(global_clrButtonForeground);
-    btnChange4.setFont(global_font);
+    btnChange4.setFont(new Font("Avenir Next W01 Light", Font.PLAIN, 16));
     cp.add(btnChange4);
 
     btnChange5.setBounds(950, 445, 90, 35);
@@ -201,8 +193,7 @@ public class CasinoGUI extends Frame {
         btnChange5_ActionPerformed(evt);
       }
     });
-    btnChange5.setBackground(global_clrButtonForeground);
-    btnChange5.setFont(global_font);
+    btnChange5.setFont(new Font("Avenir Next W01 Light", Font.PLAIN, 16));
     cp.add(btnChange5);
 
     btnRegistrieren.setBounds(100, 600, 120, 35);
@@ -213,8 +204,7 @@ public class CasinoGUI extends Frame {
         btnRegistrieren_ActionPerformed(evt);
       }
     });
-    btnRegistrieren.setBackground(global_clrButtonForeground);
-    btnRegistrieren.setFont(global_font);
+    btnRegistrieren.setFont(new Font("Avenir Next W01 Light", Font.PLAIN, 16));
     cp.add(btnRegistrieren);
     btnAnmelden.setBounds(100, 630, 120, 35);
     btnAnmelden.setText("Anmelden");
@@ -224,8 +214,7 @@ public class CasinoGUI extends Frame {
         btnAnmelden_ActionPerformed(evt);
       }
     });
-    btnAnmelden.setBackground(global_clrButtonForeground);
-    btnAnmelden.setFont(global_font);
+    btnAnmelden.setFont(new Font("Avenir Next W01 Light", Font.PLAIN, 16));
     cp.add(btnAnmelden);
     btnAbmelden.setBounds(100, 660, 120, 35);
     btnAbmelden.setText("Abmelden");
@@ -235,8 +224,7 @@ public class CasinoGUI extends Frame {
         btnAbmelden_ActionPerformed(evt);
       }
     });
-    btnAbmelden.setBackground(global_clrButtonForeground);
-    btnAbmelden.setFont(global_font);
+    btnAbmelden.setFont(new Font("Avenir Next W01 Light", Font.PLAIN, 16));
     cp.add(btnAbmelden);
 
     lblCard1.setBounds(105, 195, 170, 220);
@@ -318,13 +306,13 @@ public class CasinoGUI extends Frame {
     tfName.setBounds(260, 40, 180, 20);
     tfName.setBackground(new Color(0x228B22));
     tfName.setForeground(Color.WHITE);
-    tfName.setFont(global_font);
+    tfName.setFont(new Font("Avenir Next W01 Light", Font.PLAIN, 16));
     cp.add(tfName);
 
     tfPasswort.setBounds(550, 40, 120, 20);
     tfPasswort.setBackground(new Color(0x228B22));
     tfPasswort.setForeground(Color.WHITE);
-    tfPasswort.setFont(global_font);
+    tfPasswort.setFont(new Font("Avenir Next W01 Light", Font.PLAIN, 16));
     cp.add(tfPasswort);
 
     jLabel1.setBounds(390, 530, 400, 200);
@@ -332,7 +320,7 @@ public class CasinoGUI extends Frame {
     jLabel1.setIcon(jLabel1Icon);
     jLabel1.setBackground(new Color(0x228B22));
     jLabel1.setOpaque(true);
-    jLabel1.setFont(global_font);
+    jLabel1.setFont(new Font("Avenir Next W01 Light", Font.PLAIN, 16));
     cp.add(jLabel1);
 
     btnStart.setBounds(920, 530, 140, 50);
@@ -345,13 +333,13 @@ public class CasinoGUI extends Frame {
       }
     });
     btnStart.setBackground(new Color(0xFE2E2E));
-    btnStart.setFont(global_font);
+    btnStart.setFont(new Font("Avenir Next W01 Light", Font.PLAIN, 16));
     cp.add(btnStart);
 
     tfKontostand.setBounds(930, 40, 100, 20);
     tfKontostand.setBackground(new Color(0x228B22));
     tfKontostand.setForeground(Color.WHITE);
-    tfKontostand.setFont(global_font);
+    tfKontostand.setFont(new Font("Avenir Next W01 Light", Font.PLAIN, 16));
     tfKontostand.addKeyListener(this.numberCheckKeyAdapter);
     cp.add(tfKontostand);
     // Ende Komponenten
