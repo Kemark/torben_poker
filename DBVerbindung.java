@@ -10,7 +10,7 @@ public class DBVerbindung
   private Statement meinSqlStatement = null;  
 
   // Methode zum Öffnen der Datenbankverbindung und initiieren des SQL-Statements
-  public boolean oeffneDB()  
+  public void oeffneDB()  
   {
     // Try-Catch muss für die Behandlung von Ausnahmefällen (z.B. Datenbank nicht vorhanden) benutzt werden
     try
@@ -21,6 +21,7 @@ public class DBVerbindung
        
       // 2. Verbindung aufbauen
       meineDBVerbindung = DriverManager.getConnection("jdbc:mysql://172.17.128.8/inf12-03-04","inf12-03-04","10820");
+      //meineDBVerbindung = DriverManager.getConnection("jdbc:mysql://localhost/poker","root","admin");
       
       // 3. Objekt für die Ausführung von SQL-Statements erzeugen
       meinSqlStatement = meineDBVerbindung.createStatement();
@@ -29,18 +30,14 @@ public class DBVerbindung
     // im Falle eines Fehlers false zurückgeben
     catch (Exception ex)
     {
-      return false;   
-    }
-    
-    // wenn alles geklappt hat true zurückgeben
-    return true;
+      throw new RuntimeException("Datenbankverbindung kann nicht hergestellt werden", ex);
+    }    
   }
   
   // Methode zum Schließen der DB
-  public  boolean schliesseDB()
+  public void schliesseDB()
   {
     // Variable für den Rückgabewert
-    boolean rc = true;
     try
     {
       meinSqlStatement.close();
@@ -49,13 +46,12 @@ public class DBVerbindung
     // Im Fehlerfall Returncode auf false
     catch (SQLException err) 
     {
-      rc = false; 
+      throw new RuntimeException("Datenbankverbindung kann nicht geschlossen werden", err);
     }
-    return rc;
   }
 
   // Methode zum Ändern eines Datensatzes in der DB
-  public boolean aendereDB(String pSQL)
+  public void aendereDB(String pSQL)
   { 
     // Variable für den Rückgabewert
     boolean rc = true;
@@ -66,9 +62,8 @@ public class DBVerbindung
     // Im Fehlerfall Returncode auf false
     catch (SQLException err) 
     {
-      rc = false; 
+      throw new RuntimeException("Datenbank kann nicht geändert werden", err);
     }
-    return rc;
   }
   
   
@@ -76,20 +71,14 @@ public class DBVerbindung
   // Methode gibt den Datensatz zurück, im Fehlerfall "null"
   public ResultSet leseDB(String pSQL)                 
   {
-    // Variable für das Ergebnis der Anfrage
-    ResultSet meinSQLErgebnis;                            
-
     try
     { // Ausführen der Angfrage an die Datenbank
-      meinSQLErgebnis = meinSqlStatement.executeQuery(pSQL);
+      return meinSqlStatement.executeQuery(pSQL);
     }
     // Im Fehlerfall Ergebnis auf null setzen
     catch(SQLException err)
     {
-      meinSQLErgebnis = null;
+      throw new RuntimeException("Datenbank kann nicht gelesen werden", err);
     }
-      
-    return meinSQLErgebnis;
   }
-
 }

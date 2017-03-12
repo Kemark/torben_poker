@@ -12,6 +12,7 @@ import java.util.Calendar;
   * @author 
 */
 public class CasinoGUI extends Frame {
+
   // Anfang Attribute
   private JLabel lblName = new JLabel();
   private JLabel lblPasswort = new JLabel();
@@ -23,7 +24,6 @@ public class CasinoGUI extends Frame {
   private JButton btnChange3 = new JButton();
   private JButton btnChange4 = new JButton();
   private JButton btnChange5 = new JButton();
-  private JButton btnChangeAll = new JButton();
   private JButton btnRegistrieren = new JButton();
   private JButton btnAnmelden = new JButton();
   private JButton btnAbmelden = new JButton();
@@ -51,6 +51,36 @@ public class CasinoGUI extends Frame {
   // globale Einstellungen wie farben und Font
   private Color global_clrButtonForeground = Color.BLUE;
   private Font global_font = new Font("Avenir Next W01 Light", Font.PLAIN, 16);
+
+  /**
+   * siehe http://stackoverflow.com/questions/11093326/restricting-jtextfield-input-to-integers
+   */
+  private KeyAdapter numberCheckKeyAdapter = new KeyAdapter() {
+
+    public void keyTyped(KeyEvent e) 
+    {
+      switch(e.getKeyChar()) {
+        case '0':
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9':
+        // loeschen der eingegeben Zahlen ist auch erlaubt
+        case KeyEvent.VK_BACK_SPACE:
+        case KeyEvent.VK_DELETE:
+          // es werden nur die zuvor definierten Zeichen verarbeitet
+          break;
+        default:
+          // aller anderen Zeichen werden ignoriert
+          e.consume();
+      }
+    }
+  };
 
   /**
    * 
@@ -105,15 +135,12 @@ public class CasinoGUI extends Frame {
     tfEinsatz.setBackground(new Color(0x228B22));
     tfEinsatz.setForeground(Color.WHITE);
     tfEinsatz.setFont(global_font);
-    tfEinsatz.addKeyListener(new KeyAdapter() {
-        public void keyTyped(KeyEvent e) {
-            CasinoGUI.checkedNumberPressed(e);
-        }
-    });    
+    tfEinsatz.addKeyListener(this.numberCheckKeyAdapter);
     cp.add(tfEinsatz);
 
     btnChange1.setBounds(150, 445, 90, 35);
     btnChange1.setText("Change");
+    btnChange1.setEnabled(false);
     btnChange1.setMargin(new Insets(2, 2, 2, 2));
     btnChange1.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent evt) {
@@ -128,6 +155,7 @@ public class CasinoGUI extends Frame {
 
     btnChange2.setBounds(350, 445, 90, 35);
     btnChange2.setText("Change");
+    btnChange2.setEnabled(false);
     btnChange2.setMargin(new Insets(2, 2, 2, 2));
     btnChange2.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent evt) {
@@ -140,6 +168,7 @@ public class CasinoGUI extends Frame {
 
     btnChange3.setBounds(550, 445, 90, 35);
     btnChange3.setText("Change");
+    btnChange3.setEnabled(false);
     btnChange3.setMargin(new Insets(2, 2, 2, 2));
     btnChange3.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent evt) {
@@ -152,6 +181,7 @@ public class CasinoGUI extends Frame {
 
     btnChange4.setBounds(750, 445, 90, 35);
     btnChange4.setText("Change");
+    btnChange4.setEnabled(false);
     btnChange4.setMargin(new Insets(2, 2, 2, 2));
     btnChange4.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent evt) {
@@ -164,6 +194,7 @@ public class CasinoGUI extends Frame {
 
     btnChange5.setBounds(950, 445, 90, 35);
     btnChange5.setText("Change");
+    btnChange5.setEnabled(false);
     btnChange5.setMargin(new Insets(2, 2, 2, 2));
     btnChange5.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent evt) {
@@ -173,18 +204,6 @@ public class CasinoGUI extends Frame {
     btnChange5.setBackground(global_clrButtonForeground);
     btnChange5.setFont(global_font);
     cp.add(btnChange5);
-
-    btnChangeAll.setBounds(545, 488, 100, 35);
-    btnChangeAll.setText("Change All");
-    btnChangeAll.setMargin(new Insets(2, 2, 2, 2));
-    btnChangeAll.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent evt) {
-        btnChangeAll_ActionPerformed(evt);
-      }
-    });
-    btnChangeAll.setBackground(global_clrButtonForeground);
-    btnChangeAll.setFont(global_font);
-    cp.add(btnChangeAll);
 
     btnRegistrieren.setBounds(100, 600, 120, 35);
     btnRegistrieren.setText("Registrieren");
@@ -318,6 +337,7 @@ public class CasinoGUI extends Frame {
 
     btnStart.setBounds(920, 530, 140, 50);
     btnStart.setText("START");
+    btnStart.setEnabled(false);
     btnStart.setMargin(new Insets(2, 2, 2, 2));
     btnStart.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent evt) {
@@ -332,11 +352,7 @@ public class CasinoGUI extends Frame {
     tfKontostand.setBackground(new Color(0x228B22));
     tfKontostand.setForeground(Color.WHITE);
     tfKontostand.setFont(global_font);
-    tfKontostand.addKeyListener(new KeyAdapter() {
-        public void keyTyped(KeyEvent e) {
-            CasinoGUI.checkedNumberPressed(e);
-        }
-    });
+    tfKontostand.addKeyListener(this.numberCheckKeyAdapter);
     cp.add(tfKontostand);
     // Ende Komponenten
 
@@ -360,78 +376,156 @@ public class CasinoGUI extends Frame {
   } // end of main
 
   public void btnChange1_ActionPerformed(ActionEvent evt) {
-    lblCard1.setIcon(casino.getKarteZufaellig());
+    lblCard1.setIcon(casino.getObersteKarte(1));
+    btnChange1.setEnabled(false);
   } // end of btnChange1_ActionPerformed
 
   public void btnChange2_ActionPerformed(ActionEvent evt) {
-    lblCard2.setIcon(casino.getKarteZufaellig());
+    lblCard2.setIcon(casino.getObersteKarte(2));
+    btnChange2.setEnabled(false);
   } // end of btnChange2_ActionPerformed
 
   public void btnChange3_ActionPerformed(ActionEvent evt) {
-    lblCard3.setIcon(casino.getKarteZufaellig());
+    lblCard3.setIcon(casino.getObersteKarte(3));
+    btnChange3.setEnabled(false);
   } // end of btnChange3_ActionPerformed
 
   public void btnChange4_ActionPerformed(ActionEvent evt) {
-    lblCard4.setIcon(casino.getKarteZufaellig());
+    lblCard4.setIcon(casino.getObersteKarte(4));
+    btnChange4.setEnabled(false);
   } // end of btnChange4_ActionPerformed
 
   public void btnChange5_ActionPerformed(ActionEvent evt) {
-    lblCard5.setIcon(casino.getKarteZufaellig());
-  } // end of btnChangeAll_ActionPerformed
+    lblCard5.setIcon(casino.getObersteKarte(5));
+    btnChange5.setEnabled(false);
+  } // end of btnChange5_ActionPerformed
 
-  public void btnChangeAll_ActionPerformed(ActionEvent evt) {
-    lblCard1.setIcon(casino.getKarteZufaellig());
-    lblCard2.setIcon(casino.getKarteZufaellig());
-    lblCard3.setIcon(casino.getKarteZufaellig());
-    lblCard4.setIcon(casino.getKarteZufaellig());
-    lblCard5.setIcon(casino.getKarteZufaellig());
-  } // end of btnChangeAll_ActionPerformed
-
+  /**
+   * Benutzer fuer das Spiel registrieren
+   */
   public void btnRegistrieren_ActionPerformed(ActionEvent evt) {
-    casino.registrieren(tfName.getText(), tfPasswort.getText(), tfKontostand.getText());
+
+    // pruefe, ob Kontostand gesetzt ist
+    if (tfKontostand.getText().equals("")) {
+      JOptionPane.showMessageDialog(this, "Kontostand muss gefüllt sein", "Fehler", JOptionPane.ERROR_MESSAGE);
+      return;
+    }
+
+    // pruefe, ob Name gesetzt ist
+    if (tfName.getText().equals("")) {
+      JOptionPane.showMessageDialog(this, "Name muss definiert sein", "Fehler", JOptionPane.ERROR_MESSAGE);
+      return;
+    }
+
+    // pruefe, ob Name gesetzt ist
+    if (tfPasswort.getText().equals("")) {
+      JOptionPane.showMessageDialog(this, "Passwort muss definiert sein", "Fehler", JOptionPane.ERROR_MESSAGE);
+      return;
+    }
+
+    try {
+      casino.registrieren(tfName.getText(), tfPasswort.getText(), tfKontostand.getText());
+    }
+    catch(RuntimeException ex) {
+      JOptionPane.showMessageDialog(this, ex.getMessage(), "Fehler", JOptionPane.ERROR_MESSAGE);
+    }
   } // end of btnRegistrieren_ActionPerformed
 
+  /**
+   * Anmeldung des Benutzer per Abfrage der Datenbank
+   */
   public void btnAnmelden_ActionPerformed(ActionEvent evt) {
-    casino.anmelden(tfName.getText(), tfPasswort.getText(), tfKontostand, tfEinsatz);
+    try 
+    {
+      casino.anmelden(tfName.getText(), tfPasswort.getText());
+      tfKontostand.setText(String.valueOf(casino.getKontostand()));
+      tfEinsatz.setText(String.valueOf(casino.getEinsatz()));
+
+      // Button freischalten, bzw. deaktivieren
+      btnStart.setEnabled(true);
+      btnRegistrieren.setEnabled(false);
+      btnAnmelden.setEnabled(false);
+
+      // Passwort Feld wird unsichtbar
+      tfPasswort.setVisible(false);
+      lblPasswort.setVisible(false);
+    } 
+    catch(RuntimeException ex) {
+      JOptionPane.showMessageDialog(this, ex.getMessage(), "Fehler", JOptionPane.ERROR_MESSAGE);
+    }
   } // end of btnAnmelden_ActionPerformed
 
+  /**
+   * Beendet das Spiel
+   */
   public void btnAbmelden_ActionPerformed(ActionEvent evt) {
-    aendern();
+    try {
+      casino.abmelden(tfName.getText(), tfKontostand.getText(), tfEinsatz.getText());
+    } 
+    catch(RuntimeException ex) {
+      JOptionPane.showMessageDialog(this, ex.getMessage(), "Fehler", JOptionPane.ERROR_MESSAGE);
+    }
     System.exit(0);
   } // end of btnAbmelden_ActionPerformed
 
+  /**
+   * Starten der Anwendung
+   */
   public void btnStart_ActionPerformed(ActionEvent evt) {
-    // TODO hier Quelltext einfügen
-  } // end of btnStart_ActionPerformed
 
+    try {
+      if (btnStart.getText().equals("START")) {
 
-  public static void checkedNumberPressed(KeyEvent e) {
+        // karten stapel erzeugen (mischen der karten)
+        casino.start(this.tfKontostand.getText(), this.tfEinsatz.getText());
 
-    // Vorlage stammt aus http://stackoverflow.com/questions/11093326/restricting-jtextfield-input-to-integers
-      switch(e.getKeyChar()) {
-        case '0':
-        case '1':
-        case '3':
-        case '4':
-        case '5':
-        case '6':
-        case '7':
-        case '8':
-        case '9':
-        // loeschen der eingegeben Zahlen ist auch erlaubt
-        case KeyEvent.VK_BACK_SPACE:
-        case KeyEvent.VK_DELETE:
-          // es werden nur die zuvor definierten Zeichen verarbeitet
-          break;
-        default:
-          // aller anderen Zeichen werden ignoriert
-          e.consume();
+        // Einsatz und Kontostand deaktivieren
+        tfEinsatz.setEnabled(false);
+        tfKontostand.setEnabled(false);
+        
+        // erst mit Start werden alle buttons aktiv
+        btnChange1.setEnabled(true);
+        btnChange2.setEnabled(true);
+        btnChange3.setEnabled(true);
+        btnChange4.setEnabled(true);
+        btnChange5.setEnabled(true);
+
+        // oberste karte ziehen
+        lblCard1.setIcon(casino.getObersteKarte(1));
+        lblCard2.setIcon(casino.getObersteKarte(2));
+        lblCard3.setIcon(casino.getObersteKarte(3));
+        lblCard4.setIcon(casino.getObersteKarte(4));
+        lblCard5.setIcon(casino.getObersteKarte(5));
+
+        // button auf beenden setzen
+        btnStart.setText("BEENDEN");
       }
-  };
+      // Beenden Fall
+      else {
 
-  public void aendern() {
-    casino.aendern(tfName.getText(), tfKontostand.getText(), tfEinsatz.getText());
-  }
+          // bei Beenden werden alle buttons wieder deaktiviert
+          casino.gewinnErmitteln();        
+          tfKontostand.setText(Integer.toString(casino.getKontostand()));
+
+          // Buttons wieder deaktivieren
+          btnChange1.setEnabled(false);
+          btnChange2.setEnabled(false);
+          btnChange3.setEnabled(false);
+          btnChange4.setEnabled(false);
+          btnChange5.setEnabled(false);
+
+          // Einsatz und Kontostand deaktivieren
+          tfEinsatz.setEnabled(true);
+          tfKontostand.setEnabled(true);
+
+          btnStart.setText("START");
+      }
+    } catch(Exception ex) {
+
+      // Kontostand kann zu gering sein
+      JOptionPane.showMessageDialog(this, ex.getMessage(), "Fehler", JOptionPane.ERROR_MESSAGE);
+    }
+  } // end of btnStart_AStart
 
   // Ende Methoden
 } // end of class CasinoGUI

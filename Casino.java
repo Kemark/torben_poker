@@ -1,4 +1,3 @@
-
 /**
   *
   * Beschreibung
@@ -6,130 +5,203 @@
   * @version 1.0 vom 13.02.2017
   * @author 
   */
-import java.io.*;
-import java.awt.*;
-import java.util.*;
-import javax.swing.*;
-import javax.imageio.*;
-import java.awt.image.*;
-import java.util.Calendar;
+import java.io. * ; 
+import java.awt. * ; 
+import java.util. * ; 
+import javax.swing. * ; 
+import javax.imageio. * ; 
+import java.awt.image. * ; 
+import java.util.Calendar; 
 
 public class Casino {
 
-  private String Passwort;
-  private String Name;
-  private int Kontostand;
-  private int Einsatz;
+  private String Passwort; 
+  private String Name; 
+  private int Kontostand; 
+  private int Einsatz; 
 
-  // array enthaelt alle karten
-  private ArrayList<Karte> kartenListe = new ArrayList<Karte>();
+  // array enthaelt alle verfuegbaren karten
+  private ArrayList <Karte> kartenListe; 
+
+  // array enthaelt alle noch nicht vergebenen karten. Es muss sichergestellt sein, dass
+  // eine karte nicht doppelt vergeben wird.
+  private ArrayList <Karte> kartenStapel; 
+
+  // array enthaelt die gesetzten karten
+  private Karte[] aktuelleKarten;
 
   // feld enthaelt die karten rueckseite
-  private ImageIcon kartenrueckseite;
+  private ImageIcon kartenrueckseite; 
 
-  private DBZugriffCasino meinDBZugriff = new DBZugriffCasino();
+  // datenbank zugriff
+  private DBZugriffCasino meinDBZugriff; 
+
+  /**
+   * Konstruktor
+   */
+  public Casino() {
+    this.kartenListe = new ArrayList<Karte>();
+    this.meinDBZugriff = new DBZugriffCasino();
+  }
 
   public String getPasswort() {
-    return Passwort;
+    return Passwort; 
   }
 
   public void setPasswort(String Passwort) {
-    this.Passwort = Passwort;
+    this.Passwort = Passwort; 
   }
 
   public String getName() {
-    return Name;
+    return Name; 
   }
 
   public void setName(String Name) {
-    this.Name = Name;
+    this.Name = Name; 
   }
 
   public int getKontostand() {
-    return Kontostand;
+    return Kontostand; 
   }
 
   public void setKontostand(int Kontostand) {
-    this.Kontostand = Kontostand;
+    this.Kontostand = Kontostand; 
   }
 
   public int getEinsatz() {
-    return Einsatz;
+    return Einsatz; 
   }
 
   public void setEinsatz(int Einsatz) {
-    this.Einsatz = Einsatz;
+    this.Einsatz = Einsatz; 
   }
 
-  private ArrayList<String> karten; //ArrayList 
-
-  public Casino() {
-    karten = new ArrayList<String>();
-  }
-
-  public void setKarten(String pKarten) {
-    karten.add(pKarten);
-  }
-
-  public String getKarten(int pIndex) {
-    return karten.get(pIndex);
-  }
-
-  public int getSizeKarten() {
-    return karten.size();
-  }
-
+  /**
+   * neuen Benutzer registrieren
+   */
   public void registrieren(String name, String passwort, String kontostand) {
 
-    this.setName(name);
-    this.setPasswort(passwort);
+    this.setName(name); 
+    this.setPasswort(passwort); 
     this.setKontostand(Integer.parseInt(kontostand));
-    //meinDBZugriff.erfasseKunde(this);
+
+    try {
+      meinDBZugriff.erfasseKunde(this); 
+    }
+    catch(Exception ex) {
+      throw new RuntimeException("Benuter " + name + " existiert bereits!");
+    }
   }
 
-  public void anmelden(String name, String passwort, JTextField tfKontostand, JTextField tfEinsatz) {
+  /**
+   * Anmeldung eines bestehenden Benutzers
+   */
+  public void anmelden(String name, String passwort) {
 
-    this.setName(name);
-    this.setPasswort(passwort);
-    //meinDBZugriff.sucheKunde(poker);
-    tfKontostand.setText(String.valueOf(this.getKontostand()));
-    tfEinsatz.setText(Integer.toString(this.getEinsatz()));
+    this.setName(name); 
+    meinDBZugriff.sucheKunde(this);
+
+    if(!passwort.equals(this.getPasswort())) {
+      throw new RuntimeException("Passwort ist falsch");
+    }
   }
 
-  public void aendern(String name, String kontostand, String einsatz) {
+  /**
+   * beim Abmelden wird der letzte Kontostand und Einsatz in die zurueckgeschrieben.
+   */
+  public void abmelden(String name, String kontostand, String einsatz) {
 
-    int rc = 0;
-    this.setName(name);
-    //meinDBZugriff.sucheKunde(this);
-    this.setKontostand(Integer.parseInt(kontostand));
-    this.setEinsatz(Integer.parseInt(einsatz));
-    //meinDBZugriff.aendereKunde(this);
-
-    if (rc < 0) {
-      JOptionPane.showMessageDialog(null, "Zugriff auf DB fehlgeschlagen", "Fehler", JOptionPane.INFORMATION_MESSAGE);
-    } // end of if    
+    this.setName(name); 
+    this.setKontostand(Integer.parseInt(kontostand)); 
+    this.setEinsatz(Integer.parseInt(einsatz)); 
+    meinDBZugriff.aendereKunde(this);
   }
+
+  /**
+   * bereitet das Spiel vor. Legt Kartenstapel an....
+   */
+  public void start(String strKontostand, String strEinsatz) {
+
+    if(strEinsatz.equals("")) {
+      throw new RuntimeException("Einsatz daf nicht leer sein");
+    }
+
+    if(strKontostand.equals("")) {
+      throw new RuntimeException("Kontostand darf nicht leer sein");
+    }
+
+    // vor dem Start prüfen ob 
+    int einsatz = Integer.parseInt(strEinsatz);
+    int kontostand = Integer.parseInt(strKontostand);
+
+    if(einsatz == 0) {
+      throw new RuntimeException("Es muss ein Einsatz gesetzt sein");
+    }
+
+    if(kontostand == 0) {
+      throw new RuntimeException("Es muss ein Kontostand gesetzt sein");
+    }
+
+    if(einsatz > kontostand) {
+      throw new RuntimeException("Kontostand ist zu gering");
+    }
+
+    // legt den kartenstapel an. 
+    this.kartenStapel = new ArrayList<Karte>();
+    // temporaere kartenstapel wird benoetigt, damit eine bereits gezogene karte aus dem Stapel
+    // entfernt werden kann und nicht doppelt verwendet wird.
+    ArrayList<Karte> tempKartenListe = (ArrayList<Karte>)this.kartenListe.clone();
+
+    // karten stapel erzeugen. Entspricht dem mischen aller karten.
+    while(tempKartenListe.size() > 0) {
+
+      // Zufallszahl generieren (laut Beschreibung)
+      int randomNumber = this.createRandomNumber(1, tempKartenListe.size());
+
+      // index des arrays beginnt bei 0, daher 1 abziehen.
+      Karte ermittelteKarte = tempKartenListe.get(randomNumber-1);
+
+      // gezogen karte aus liste entfernen
+      tempKartenListe.remove(randomNumber-1);
+
+      // ermittelte Karte in Stapel einfuegen
+      this.kartenStapel.add(ermittelteKarte);
+    }
+
+    // list der aktuelle gesetzten karten wird angelegt.
+    this.aktuelleKarten = new Karte[5];
+  }
+
   /**
    * liefert eine Zufallszahl
    */
   private int createRandomNumber(int low, int high) {
 
     // Berechnung der Zufallszahl laut Beschreibung
-    return (int) (Math.random() * (high - low + 1) + low);
+    return (int)(Math.random() * (high - low + 1) + low); 
   }
 
-  public ImageIcon getKarteZufaellig() {
+  /**
+   * Liefert eine Karte zufaellig zurueck
+   */
+  public ImageIcon getObersteKarte(int index) {
 
-    // Zufallszahl generieren (laut Beschreibung)
-    int x = this.createRandomNumber(1, this.kartenListe.size());
+    // oberste Karte ermitteln. Oberste karte hat immer den index 0.
+    Karte ermittelteKarte = this.kartenStapel.get(0);
 
-    // index des arrays beginnt bei 0, daher 1 abziehen.
-    return this.kartenListe.get(x-1).getImage();
+    // karte aus stapel entfernen, damit diese nicht zweimal vergeben werden kann.
+    this.kartenStapel.remove(0);
+
+    // ermittelte Karte in aktuelle Kartenliste eintragen
+    aktuelleKarten[index-1] = ermittelteKarte; 
+
+    // karten image zurueckliefern
+    return ermittelteKarte.getImage(); 
   }
 
   // liefert die Kartenrueckseite
   public ImageIcon getKarteRueckseite() {
-    return this.kartenrueckseite;
+    return this.kartenrueckseite; 
   }
 
   /**
@@ -137,7 +209,7 @@ public class Casino {
    */
   public void ladeKarten(int imageWidth, int imageHeigth) {
 
-    File dir = new File("Karten");
+    File dir = new File("Karten"); 
     // alle Daten im Verzeichnis "Karten"" geben lassen
     File[] kartenFiles = dir.listFiles();
 
@@ -160,12 +232,13 @@ public class Casino {
       // Karten an die vorgegeben groesse anpassen (skalieren)
       ImageIcon angpepasstesImage = new ImageIcon(image.getImage().getScaledInstance(imageWidth, imageHeigth, Image.SCALE_SMOOTH));
       String kartenFileName = kartenFile.getName();
+
+      // Karten in Array übernehmen. Die Rueckseite wird jedoch in eine seperate Variable uebernommen.
       if(kartenFileName.equals("Rueck.png") ) {
-        
         this.kartenrueckseite = angpepasstesImage;
       } 
-      else {
-
+      else 
+      {
         //siehe: http://stackoverflow.com/questions/14833008/java-string-split-with-dot
         String[] kartenInfo = kartenFileName.split("\\.");
         Karte karte;
@@ -187,10 +260,68 @@ public class Casino {
     }
   }
 
-  /*Calendar cal = Calendar.getInstance();
-    System.out.println("Datum:"+cal.get(Calendar.DAY_OF_MONTH)+"."+;
-    (cal.get(Calendar.MONTH)+1)+"."+cal.get(Calendar.YEAR));
-    System.out.println("Uhrzeit:"+cal.get(Calendar.HOUR_OF_DAY)+":"+;
-    cal.get(Calendar.MINUTE)+":"+cal.get(Calendar.SECOND)+":"+;
-    cal.get(Calendar.MILLISECOND));   */
+  /**
+   * ermittelt den Karten gewinn
+   */
+  public void gewinnErmitteln() {
+
+    int gewinn = 0;
+    int einsatz = this.getEinsatz();
+
+    // Klasse zur Gewinnermittlung
+    Kombination gewinnErmittlung = new Kombination(aktuelleKarten);
+    String kombination = gewinnErmittlung.getKombination();
+    switch(kombination) {
+
+      case "Royal Flush":
+        gewinn = 9 * einsatz;
+        break;
+
+      case "Straigth Flush":
+        gewinn = 8 * einsatz;
+        break;
+
+      case "Vierling":
+        gewinn = 7 * einsatz;
+        break;
+
+      case "Full House":
+        gewinn = 6 * einsatz;
+        break;
+
+      case "Flush":
+        gewinn = 5 * einsatz;
+        break;
+
+      case "Strasse":
+        gewinn = 4 * einsatz;
+        break;
+
+      case "Drilling":
+        gewinn = 3 * einsatz;
+        break;
+
+      case "Zwei Paare":
+        gewinn = 2 * einsatz;
+        break;
+
+      case "Paar":
+        gewinn = 1 * einsatz;
+        break;
+
+      // kein Gewinn bedeutet Einsatz wird vom Kontastand abgezogen.
+      default:
+        gewinn = - einsatz;
+    }
+
+    if(!kombination.equals("")) {
+      JOptionPane.showMessageDialog(null, "Glückwunsch!!!!\nSie haben ein " + kombination, "G E W I N N", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    int alterKontostand = this.getKontostand();
+    this.setKontostand(this.getKontostand() + gewinn);
+
+    // zuletzt noch den Spielstand für jedes Spiel in die Datenbank schreiben
+    this.meinDBZugriff.erfasseSpielDaten(this, alterKontostand);
+  }
 } // end of class Casino
