@@ -1,1 +1,1 @@
-javac *.java && java CasinoGUI *.class
+javac *.java && java -classpath lib/mysql-connector-java-5.1.5.jar:. CasinoGUI
